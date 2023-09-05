@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Compass</string>
+    <string name="Accelerometer">Акселерометр</string>
+    <string name="x">textView</string>
+    <string name="y">textView2</string>
+    <string name="z">textView3</string>
+    <string name="magnetic">Магнитный сенсор</string>
+    <string name="proximity">Приближение</string>
+    <string name="light">Освещенность</string>
+</resources>

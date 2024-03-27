@@ -1,15 +1,22 @@
 package com.example.compass;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
+
     TextView mAccelerometerX;
     TextView mAccelerometerY;
     TextView mAccelerometerZ;
@@ -25,28 +32,55 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Sensor mLightSensor;
     float mMaxValue;
     float mValue;
+
     @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAccelerometerX = (TextView)findViewById(R.id.textView);
-        mAccelerometerY = (TextView)findViewById(R.id.textView2);
-        mAccelerometerZ = (TextView)findViewById(R.id.textView3);
-        mMagneticX = (TextView)findViewById(R.id.textView5);
-        mMagneticY = (TextView)findViewById(R.id.textView6);
-        mMagneticZ = (TextView)findViewById(R.id.textView7);
-        mProximity = (TextView)findViewById(R.id.textView9);
-        mLight = (TextView)findViewById(R.id.textView11);
+
+        // Инициализировать sensorManager перед его использованием
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mAccelerometerSensor =
-                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mMagneticSensor =
-                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        // Проверка наличия магнитного сенсора
+        mMagneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if (mMagneticSensor == null) {
+            Log.e("MainActivity", "Устройство не имеет магнитного сенсора.");
+            // Добавьте соответствующее уведомление или обработку
+        }
+
+        // Перенесено из onCreate
+        Button buttonShowCompass = findViewById(R.id.buttonShowCompass);
+        buttonShowCompass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Создать Intent для перехода на другую активность (например, CompassActivity)
+                Intent intent = new Intent(MainActivity.this, AnotherCompassActivity.class);
+
+                // Добавить необходимые данные в Intent (если нужно)
+                // intent.putExtra("key", "value");
+
+                // Запустить активность
+                startActivity(intent);
+            }
+        });
+
+        mAccelerometerX = findViewById(R.id.textView);
+        mAccelerometerY = findViewById(R.id.textView2);
+        mAccelerometerZ = findViewById(R.id.textView3);
+        mMagneticX = findViewById(R.id.textView5);
+        mMagneticY = findViewById(R.id.textView6);
+        mMagneticZ = findViewById(R.id.textView7);
+        mProximity = findViewById(R.id.textView9);
+        mLight = findViewById(R.id.textView11);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mAccelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mMagneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         mProximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         mLightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         mMaxValue = mLightSensor.getMaximumRange();
     }
+
     @SuppressLint("SetTextI18n")
     @Override
     public void onSensorChanged(SensorEvent event)
@@ -57,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mAccelerometerZ.setText(Float.toString(event.values[2]));
         }
         if(event.sensor.getType()==Sensor.TYPE_MAGNETIC_FIELD){
+            Log.d("MagneticSensor", "X: " + event.values[0] + ", Y: " + event.values[1] + ", Z: " + event.values[2]);
             mMagneticX.setText(Float.toString(event.values[0]));
             mMagneticY.setText(Float.toString(event.values[1]));
             mMagneticZ.setText(Float.toString(event.values[2]));

@@ -7,4 +7,5 @@
     <string name="magnetic">Магнитный сенсор</string>
     <string name="proximity">Приближение</string>
     <string name="light">Освещенность</string>
+    <string name="compass_image">компас</string>
 </resources>
